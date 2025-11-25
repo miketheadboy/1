@@ -78,7 +78,12 @@ export class InventoryManager {
         const item = ITEMS[itemId];
         if (!item) return false;
 
-        const totalCost = item.value * quantity;
+        // Calculate price with trading skill discount
+        const tradingSkill = playerManager.getSkill('trading');
+        const discount = tradingSkill * 0.02;
+        const pricePerItem = item.value * (1 - discount);
+        const totalCost = pricePerItem * quantity;
+
         const stats = playerManager.getStats();
 
         if (stats.money < totalCost) {
@@ -87,6 +92,12 @@ export class InventoryManager {
 
         playerManager.modifyStat('money', -totalCost);
         this.addItem(itemId, quantity);
+
+        // Chance to improve trading skill
+        if (Math.random() < 0.1) { // 10% chance per transaction
+            playerManager.improveSkill('trading');
+        }
+
         return true;
     }
 }

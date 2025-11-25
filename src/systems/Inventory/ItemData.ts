@@ -49,6 +49,33 @@ export const ITEMS: Record<string, Item> = {
         effects: { health: 20, morale: 5 },
         value: 12,
     },
+    knife: {
+        id: 'knife',
+        name: 'Bowie Knife',
+        type: ItemType.Weapon,
+        description: 'A heavy knife popular on the frontier. Good for close quarters.',
+        effects: {},
+        weaponStats: { damage: 15, accuracy: 90 },
+        value: 8,
+    },
+    pistol: {
+        id: 'pistol',
+        name: 'Colt Revolver',
+        type: ItemType.Weapon,
+        description: 'A six-shooter. Reliable and deadly.',
+        effects: {},
+        weaponStats: { damage: 30, accuracy: 75 },
+        value: 25,
+    },
+    rifle: {
+        id: 'rifle',
+        name: 'Sharps Rifle',
+        type: ItemType.Weapon,
+        description: 'A breech-loading rifle known for its accuracy and range.',
+        effects: {},
+        weaponStats: { damage: 50, accuracy: 85 },
+        value: 45,
+    },
 };
 
 export const STARTING_ITEMS: { itemId: string; quantity: number }[] = [

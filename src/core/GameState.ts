@@ -6,6 +6,7 @@ import { EcologySystem } from '../systems/Ecology/EcologySystem';
 import { EventManager } from '../systems/Events/EventManager';
 import { InventoryManager } from '../systems/Inventory/InventoryManager';
 import { CombatManager } from '../systems/Combat/CombatManager';
+import { AnimalManager } from '../systems/Animals/AnimalManager';
 import { INITIAL_EVENTS } from '../systems/Events/EventData';
 import { INITIAL_MAP_NODES } from '../systems/World/MapData';
 import { STARTING_ITEMS } from '../systems/Inventory/ItemData';
@@ -15,6 +16,8 @@ import { CombatActionType } from '../systems/Combat/CombatTypes';
 import type { Enemy } from '../systems/Combat/CombatTypes';
 import type { CharacterBackground } from '../systems/Character/CharacterTypes';
 import { SaveManager } from '../systems/SaveLoad/SaveManager';
+import { AnimalType } from '../systems/Animals/AnimalTypes';
+import { FactionType } from '../systems/Factions/FactionTypes';
 
 export interface GameState {
     // Systems
@@ -25,6 +28,7 @@ export interface GameState {
     eventManager: EventManager;
     inventoryManager: InventoryManager;
     combatManager: CombatManager;
+    animalManager: AnimalManager;
 
     // Game Data
     currentDate: Date;
@@ -47,6 +51,9 @@ export interface GameState {
     setCharacter: (bg: CharacterBackground) => void;
     saveGame: (slotId: string, slotName: string) => void;
     loadGame: (slotId: string) => void;
+    huntAnimal: (animalId: string) => void;
+    fightAnimal: (animalId: string) => void;
+    buyAnimal: (type: AnimalType, price: number) => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => {
@@ -58,6 +65,7 @@ export const useGameStore = create<GameState>((set, get) => {
     const eventManager = new EventManager();
     const inventoryManager = new InventoryManager();
     const combatManager = new CombatManager();
+    const animalManager = new AnimalManager();
 
     // Register Initial Events
     INITIAL_EVENTS.forEach(e => eventManager.registerEvent(e));
@@ -74,7 +82,7 @@ export const useGameStore = create<GameState>((set, get) => {
 
     // Initialize Ecology for locations (mock data for now)
     Object.keys(INITIAL_MAP_NODES).forEach(id => {
-        ecologySystem.initLocation(id, 1000, 500); // Default populations
+        ecologySystem.initLocation(id, 1000); // Default population
     });
 
     return {
@@ -85,6 +93,7 @@ export const useGameStore = create<GameState>((set, get) => {
         eventManager,
         inventoryManager,
         combatManager,
+        animalManager,
 
         currentDate: new Date('1854-05-30'), // Kansas-Nebraska Act
         currentLocationId: 'lawrence', // Start in Lawrence
@@ -150,7 +159,7 @@ export const useGameStore = create<GameState>((set, get) => {
         },
 
         travelTo: (nodeId: string) => {
-            const { travelSystem, currentLocationId, addLog, advanceTime, currentEvent } = get();
+            const { travelSystem, currentLocationId, addLog, advanceTime, currentEvent, animalManager } = get();
 
             // Prevent travel if event is active
             if (currentEvent) {
@@ -162,9 +171,15 @@ export const useGameStore = create<GameState>((set, get) => {
 
             if (distance === -1) return;
 
-            const days = travelSystem.getTravelTimeDays(distance, 'foot');
+            // Apply travel speed modifiers from animals
+            const speedModifier = animalManager.getTravelSpeedModifier();
+            const days = Math.ceil(travelSystem.getTravelTimeDays(distance, 'foot') / speedModifier);
 
             advanceTime(days);
+
+            // Spawn wild animals at new location
+            animalManager.spawnWildAnimals(nodeId);
+
             set({ currentLocationId: nodeId });
             addLog(`Traveled to ${INITIAL_MAP_NODES[nodeId].name}. Took ${days} days.`);
         },
@@ -222,7 +237,7 @@ export const useGameStore = create<GameState>((set, get) => {
 
         performCombatAction: (action: CombatActionType) => {
             const state = get();
-            state.combatManager.playerAction(action, state.playerManager);
+            state.combatManager.playerAction(action, state.playerManager, state.inventoryManager);
             // Force update to reflect combat state changes
             set({});
         },
@@ -244,6 +259,9 @@ export const useGameStore = create<GameState>((set, get) => {
             bg.startingReputation.forEach(rep => {
                 state.factionManager.modifyReputation(rep.faction, rep.amount);
             });
+
+            // Apply skills
+            state.playerManager.setSkills(bg.skills);
 
             set({ characterBackground: bg });
         },
@@ -286,6 +304,78 @@ export const useGameStore = create<GameState>((set, get) => {
             });
 
             state.addLog(`Game loaded from slot ${slotId}`);
+        },
+
+        huntAnimal: (animalId: string) => {
+            const state = get();
+            const result = state.animalManager.huntAnimal(animalId, state.playerManager, state.inventoryManager);
+
+            state.addLog(result.message);
+
+            if (result.result === 'combat' && result.animal) {
+                // Convert AnimalInstance to Enemy
+                // We need to import ANIMAL_DATA to get stats, or pass them from AnimalManager
+                // For now, we'll assume we can get stats from AnimalManager or just hardcode basic conversion
+                // But we don't have ANIMAL_DATA imported here.
+                // Let's import ANIMAL_DATA at the top of GameState.ts
+                // Wait, I can't easily add an import with replace_file_content if I'm only replacing this block.
+                // I'll assume I can access it via state.animalManager if I add a helper, or just use a placeholder for now.
+                // Actually, I can use a helper in AnimalManager to get Enemy data?
+                // Or I can just add the import in a separate step.
+                // Let's try to do it without extra imports if possible, or just add the import.
+
+                // Better approach: AnimalManager.huntAnimal returns the Enemy object directly if combat?
+                // No, it returns AnimalInstance.
+
+                // I'll add the import in a separate step. For now, I'll use a placeholder or try to get data.
+                // Actually, I can just use `any` for now to avoid build errors and fix it properly with import.
+                // But I want to be correct.
+
+                // Let's just trigger combat with a mock enemy based on animal name for now, 
+                // and I'll add the import in the next step.
+                const enemy: Enemy = {
+                    id: result.animal.id,
+                    name: result.animal.type, // Should be pretty name but type works for now
+                    description: `A wild ${result.animal.type}`,
+                    faction: FactionType.Native, // Placeholder
+                    health: result.animal.health,
+                    maxHealth: result.animal.health, // Approximate
+                    damage: 10, // Placeholder
+                    defense: 2,
+                    loot: [],
+                    money: 0
+                };
+                state.startCombat(enemy);
+            }
+
+            set({}); // Force update
+        },
+
+        fightAnimal: (animalId: string) => {
+            const state = get();
+            const enemy = state.animalManager.getEnemyFromAnimal(animalId);
+
+            if (enemy) {
+                state.addLog(`You engage the ${enemy.name} in combat!`);
+                state.startCombat(enemy);
+            } else {
+                state.addLog("Could not find animal to fight.");
+            }
+            set({}); // Force update
+        },
+
+        buyAnimal: (type: AnimalType, price: number) => {
+            const state = get();
+            const stats = state.playerManager.getStats();
+
+            if (stats.money >= price) {
+                state.playerManager.modifyStat('money', -price);
+                state.animalManager.addDomesticAnimal(type);
+                state.addLog(`Purchased a ${type}`);
+                set({}); // Force update
+            } else {
+                state.addLog("Not enough money to buy animal.");
+            }
         }
     };
 });

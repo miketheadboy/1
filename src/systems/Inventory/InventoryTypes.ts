@@ -18,6 +18,10 @@ export interface Item {
     type: ItemType;
     description: string;
     effects: ItemEffects;
+    weaponStats?: {
+        damage: number;
+        accuracy: number; // 0-100
+    };
     value: number; // Price in dollars
 }
 

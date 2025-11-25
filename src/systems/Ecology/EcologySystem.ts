@@ -1,8 +1,8 @@
 
+import { AnimalType } from '../Animals/AnimalTypes';
 
 export interface LocalEcology {
-    bisonPopulation: number;
-    beaverPopulation: number;
+    populations: Partial<Record<AnimalType, number>>;
     isDepleted: boolean;
 }
 
@@ -14,45 +14,41 @@ export class EcologySystem {
         // Initialize with some default data (would normally come from MapData)
     }
 
-    public initLocation(nodeId: string, bisonCount: number, beaverCount: number) {
+    public initLocation(nodeId: string, defaultPop: number) {
         this.ecologyMap[nodeId] = {
-            bisonPopulation: bisonCount,
-            beaverPopulation: beaverCount,
+            populations: {
+                [AnimalType.BUFFALO]: defaultPop,
+                [AnimalType.DEER]: defaultPop * 2,
+                [AnimalType.RABBIT]: defaultPop * 5,
+                [AnimalType.WOLF]: defaultPop / 10,
+                [AnimalType.COYOTE]: defaultPop / 5,
+                [AnimalType.BEAR]: defaultPop / 20,
+            },
             isDepleted: false,
         };
     }
 
-    public hunt(nodeId: string, target: 'bison' | 'beaver', amount: number): { success: number, meat: number, hides: number } {
+    public getPopulation(nodeId: string, type: AnimalType): number {
+        return this.ecologyMap[nodeId]?.populations[type] || 0;
+    }
+
+    public reducePopulation(nodeId: string, type: AnimalType, amount: number): void {
         const eco = this.ecologyMap[nodeId];
-        if (!eco) return { success: 0, meat: 0, hides: 0 };
+        if (!eco || !eco.populations[type]) return;
 
-        let actualHunted = 0;
-        if (target === 'bison') {
-            actualHunted = Math.min(amount, eco.bisonPopulation);
-            eco.bisonPopulation -= actualHunted;
-        } else {
-            actualHunted = Math.min(amount, eco.beaverPopulation);
-            eco.beaverPopulation -= actualHunted;
-        }
-
+        eco.populations[type] = Math.max(0, (eco.populations[type] || 0) - amount);
         this.checkDepletion(nodeId);
-
-        return {
-            success: actualHunted,
-            meat: actualHunted * 100, // lbs of meat
-            hides: actualHunted,
-        };
     }
 
     private checkDepletion(nodeId: string) {
         const eco = this.ecologyMap[nodeId];
-        if (eco.bisonPopulation < 50 && !eco.isDepleted) {
+        if (!eco) return;
+
+        const totalLargeGame = (eco.populations[AnimalType.BUFFALO] || 0) + (eco.populations[AnimalType.DEER] || 0);
+
+        if (totalLargeGame < 50 && !eco.isDepleted) {
             eco.isDepleted = true;
             // This flag can trigger the "Native Hostility" event
         }
-    }
-
-    public getPopulation(nodeId: string): LocalEcology | null {
-        return this.ecologyMap[nodeId] || null;
     }
 }

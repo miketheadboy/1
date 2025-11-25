@@ -1,8 +1,20 @@
+export interface Skills {
+    farming: number;
+    survival: number;
+    combat: number;
+    persuasion: number;
+    trading: number;
+    medicine: number;
+}
+
 export interface PlayerStats {
     health: number; // 0-100
     hunger: number; // 0-100 (0 is full, 100 is starving)
     morale: number; // 0-100 (0 is broken, 100 is high spirits)
     money: number; // Dollars
+    xp: number;
+    level: number;
+    skills: Skills;
 }
 
 export const INITIAL_PLAYER_STATS: PlayerStats = {
@@ -10,6 +22,16 @@ export const INITIAL_PLAYER_STATS: PlayerStats = {
     hunger: 0,
     morale: 80,
     money: 50,
+    xp: 0,
+    level: 1,
+    skills: {
+        farming: 0,
+        survival: 0,
+        combat: 0,
+        persuasion: 0,
+        trading: 0,
+        medicine: 0
+    }
 };
 
 export class PlayerManager {
@@ -20,13 +42,41 @@ export class PlayerManager {
     }
 
     public modifyStat(stat: keyof PlayerStats, amount: number): void {
-        this.stats[stat] += amount;
+        if (stat === 'skills' || stat === 'xp' || stat === 'level') return; // Handle separately
+
+        (this.stats[stat] as number) += amount;
         // Clamp values
         if (stat === 'health' || stat === 'morale') {
-            this.stats[stat] = Math.max(0, Math.min(100, this.stats[stat]));
+            this.stats[stat] = Math.max(0, Math.min(100, this.stats[stat] as number));
         } else if (stat === 'hunger') {
-            this.stats[stat] = Math.max(0, Math.min(100, this.stats[stat]));
+            this.stats[stat] = Math.max(0, Math.min(100, this.stats[stat] as number));
         }
+    }
+
+    public gainXp(amount: number): string | null {
+        this.stats.xp += amount;
+        // Simple leveling formula: Level * 100 XP required
+        const xpRequired = this.stats.level * 100;
+
+        if (this.stats.xp >= xpRequired) {
+            this.stats.level++;
+            this.stats.xp -= xpRequired;
+            // Grant a skill point or stat boost? For now just level up message
+            return `You reached Level ${this.stats.level}!`;
+        }
+        return null;
+    }
+
+    public getSkill(skill: keyof Skills): number {
+        return this.stats.skills[skill];
+    }
+
+    public improveSkill(skill: keyof Skills, amount: number = 1): void {
+        this.stats.skills[skill] += amount;
+    }
+
+    public setSkills(skills: Skills): void {
+        this.stats.skills = { ...skills };
     }
 
     public applySurvivalDecay(days: number): void {

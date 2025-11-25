@@ -10,6 +10,8 @@ import { InventoryPanel } from './InventoryPanel';
 import { ShopPanel } from './ShopPanel';
 import { CombatPanel } from './CombatPanel';
 import { SaveLoadMenu } from './SaveLoadMenu';
+import { AnimalsPanel } from './AnimalsPanel';
+import { SkillsPanel } from './SkillsPanel';
 import { INITIAL_MAP_NODES } from '../systems/World/MapData';
 
 export const Dashboard: React.FC = () => {
@@ -42,7 +44,9 @@ export const Dashboard: React.FC = () => {
             <div className="col-span-3 flex flex-col gap-4">
                 <StatsDisplay stats={stats} date={currentDate} />
                 <FactionDisplay reputations={factionState.reputations} />
+                <SkillsPanel />
                 <InventoryPanel />
+                <AnimalsPanel />
 
                 {/* System Menu Buttons */}
                 <div className="grid grid-cols-2 gap-2">

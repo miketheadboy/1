@@ -1,8 +1,10 @@
 import { useGameStore } from '../core/GameState';
 
 export const GameOverScreen: React.FC = () => {
-    const { deathReason, currentDate, playerManager } = useGameStore();
+    const { deathReason, currentDate, playerManager, gameOver } = useGameStore();
     const stats = playerManager.getStats();
+
+    if (!gameOver) return null;
 
     const handleRestart = () => {
         window.location.reload();
