@@ -7,6 +7,7 @@ import { EventManager } from '../systems/Events/EventManager';
 import { InventoryManager } from '../systems/Inventory/InventoryManager';
 import { CombatManager } from '../systems/Combat/CombatManager';
 import { AnimalManager } from '../systems/Animals/AnimalManager';
+import { UndergroundRailroadSystem, Mission } from '../systems/UndergroundRailroad/UndergroundRailroadSystem';
 import { INITIAL_EVENTS } from '../systems/Events/EventData';
 import { INITIAL_MAP_NODES } from '../systems/World/MapData';
 import { STARTING_ITEMS } from '../systems/Inventory/ItemData';
@@ -29,6 +30,7 @@ export interface GameState {
     inventoryManager: InventoryManager;
     combatManager: CombatManager;
     animalManager: AnimalManager;
+    undergroundRailroadSystem: UndergroundRailroadSystem;
 
     // Game Data
     currentDate: Date;
@@ -54,6 +56,7 @@ export interface GameState {
     huntAnimal: (animalId: string) => void;
     fightAnimal: (animalId: string) => void;
     buyAnimal: (type: AnimalType, price: number) => void;
+    startMission: (mission: Mission) => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => {
@@ -66,6 +69,7 @@ export const useGameStore = create<GameState>((set, get) => {
     const inventoryManager = new InventoryManager();
     const combatManager = new CombatManager();
     const animalManager = new AnimalManager();
+    const undergroundRailroadSystem = new UndergroundRailroadSystem();
 
     // Register Initial Events
     INITIAL_EVENTS.forEach(e => eventManager.registerEvent(e));
@@ -94,6 +98,7 @@ export const useGameStore = create<GameState>((set, get) => {
         inventoryManager,
         combatManager,
         animalManager,
+        undergroundRailroadSystem,
 
         currentDate: new Date('1854-05-30'), // Kansas-Nebraska Act
         currentLocationId: 'lawrence', // Start in Lawrence
@@ -124,6 +129,39 @@ export const useGameStore = create<GameState>((set, get) => {
 
             // If no historical event, check for random event (30% chance)
             let eventToTrigger = historicalEvent;
+
+            // Check for Slave Catchers (High priority if on mission)
+            const mission = state.undergroundRailroadSystem.getActiveMission();
+            if (mission && !eventToTrigger) {
+                const currentLocation = INITIAL_MAP_NODES[state.currentLocationId];
+                const catchChance = state.undergroundRailroadSystem.getSlaveCatcherChance(currentLocation);
+                if (Math.random() < catchChance) {
+                    // Trigger Slave Catcher Combat
+                    // We need to create a combat event or just start combat directly
+                    // For now, let's just start combat directly and log it
+                    state.addLog("Slave Catchers have found you!");
+                    // We need to import ENEMIES from EnemyData, but we can't easily do that here without top-level import
+                    // Let's use a helper or just assume we can get it.
+                    // Actually, I'll add the import in a separate step or just use a mock for now to avoid build error
+                    // Better: Create a specific event for this?
+                    // Let's just create a mock enemy here for now to keep it simple
+                    const slaveCatcher: Enemy = {
+                        id: 'slave_catcher',
+                        name: 'Slave Catcher',
+                        description: 'A ruthless mercenary hunting for escaped slaves.',
+                        faction: FactionType.ProSlavery,
+                        health: 80,
+                        maxHealth: 80,
+                        damage: 15,
+                        defense: 5,
+                        loot: ['money', 'whiskey', 'pistol'],
+                        money: 50
+                    };
+                    state.startCombat(slaveCatcher);
+                    return; // Stop processing other events
+                }
+            }
+
             if (!historicalEvent && Math.random() < 0.3) {
                 const randomEvent = getRandomEvent();
                 if (randomEvent) {
@@ -220,7 +258,7 @@ export const useGameStore = create<GameState>((set, get) => {
 
         buyItem: (itemId: string, quantity: number) => {
             const state = get();
-            const success = state.inventoryManager.buyItem(itemId, quantity, state.playerManager);
+            const success = state.inventoryManager.buyItem(itemId, quantity, state.playerManager, state.currentLocationId);
             if (success) {
                 state.addLog(`Purchased ${quantity}x ${itemId}`);
             } else {
@@ -376,6 +414,13 @@ export const useGameStore = create<GameState>((set, get) => {
             } else {
                 state.addLog("Not enough money to buy animal.");
             }
+        },
+
+        startMission: (mission: Mission) => {
+            const state = get();
+            state.undergroundRailroadSystem.startMission(mission);
+            state.addLog(`Mission Started: ${mission.description}`);
+            set({});
         }
     };
 });

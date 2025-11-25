@@ -12,6 +12,8 @@ import { CombatPanel } from './CombatPanel';
 import { SaveLoadMenu } from './SaveLoadMenu';
 import { AnimalsPanel } from './AnimalsPanel';
 import { SkillsPanel } from './SkillsPanel';
+import { SaloonPanel } from './SaloonPanel';
+import { SafehousePanel } from './SafehousePanel';
 import { INITIAL_MAP_NODES } from '../systems/World/MapData';
 
 export const Dashboard: React.FC = () => {
@@ -71,6 +73,8 @@ export const Dashboard: React.FC = () => {
                     <MapView currentLocationId={currentLocationId} onTravel={travelTo} />
                 </div>
                 {hasShop && <ShopPanel />}
+                <SaloonPanel />
+                <SafehousePanel />
             </div>
 
             {/* Right Column: Log (3 cols) */}

@@ -1,6 +1,8 @@
 import type { InventoryItem } from './InventoryTypes';
 import type { PlayerManager } from '../Survival/PlayerStats';
 import { ITEMS } from './ItemData';
+import { EconomySystem } from '../Economy/EconomySystem';
+import { INITIAL_MAP_NODES } from '../World/MapData';
 
 export class InventoryManager {
     private items: Map<string, InventoryItem>;
@@ -68,28 +70,6 @@ export class InventoryManager {
         if (item.effects.morale) {
             playerManager.modifyStat('morale', item.effects.morale);
         }
-
-        // Remove one from inventory
-        this.removeItem(itemId, 1);
-        return true;
-    }
-
-    public buyItem(itemId: string, quantity: number, playerManager: PlayerManager): boolean {
-        const item = ITEMS[itemId];
-        if (!item) return false;
-
-        // Calculate price with trading skill discount
-        const tradingSkill = playerManager.getSkill('trading');
-        const discount = tradingSkill * 0.02;
-        const pricePerItem = item.value * (1 - discount);
-        const totalCost = pricePerItem * quantity;
-
-        const stats = playerManager.getStats();
-
-        if (stats.money < totalCost) {
-            return false; // Not enough money
-        }
-
         playerManager.modifyStat('money', -totalCost);
         this.addItem(itemId, quantity);
 

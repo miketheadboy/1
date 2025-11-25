@@ -76,6 +76,30 @@ export const ITEMS: Record<string, Item> = {
         weaponStats: { damage: 50, accuracy: 85 },
         value: 45,
     },
+    whiskey: {
+        id: 'whiskey',
+        name: 'Whiskey',
+        type: ItemType.Resource,
+        description: 'A jug of corn whiskey. High value in dry towns.',
+        effects: { morale: 15, health: -5 },
+        value: 5,
+    },
+    furs: {
+        id: 'furs',
+        name: 'Furs',
+        type: ItemType.Resource,
+        description: 'Beaver and buffalo pelts. Valuable trade goods.',
+        effects: {},
+        value: 15,
+    },
+    tobacco: {
+        id: 'tobacco',
+        name: 'Tobacco',
+        type: ItemType.Resource,
+        description: 'Pipe tobacco. A common luxury.',
+        effects: { morale: 5 },
+        value: 4,
+    },
 };
 
 export const STARTING_ITEMS: { itemId: string; quantity: number }[] = [

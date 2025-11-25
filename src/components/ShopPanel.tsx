@@ -5,6 +5,8 @@ import { INITIAL_MAP_NODES } from '../systems/World/MapData';
 import { ANIMAL_DATA } from '../systems/Animals/AnimalData';
 import { AnimalCategory, AnimalType } from '../systems/Animals/AnimalTypes';
 
+import { EconomySystem } from '../systems/Economy/EconomySystem';
+
 export const ShopPanel: React.FC = () => {
     const { currentLocationId, playerManager, buyItem, buyAnimal, addLog } = useGameStore();
     const currentLocation = INITIAL_MAP_NODES[currentLocationId];
@@ -28,10 +30,11 @@ export const ShopPanel: React.FC = () => {
     });
 
     const tradingSkill = playerManager.getSkill('trading');
-    const discount = tradingSkill * 0.02; // 2% discount per level
+    const skillDiscount = tradingSkill * 0.02; // 2% discount per level
 
-    const getPrice = (baseValue: number) => {
-        return baseValue * (1 - discount);
+    const getPrice = (item: any) => {
+        const basePrice = EconomySystem.getPrice(item, currentLocation, item.value || item.price);
+        return basePrice * (1 - skillDiscount);
     };
 
     const handleBuy = (itemId: string, quantity: number = 1) => {
@@ -138,7 +141,7 @@ export const ShopPanel: React.FC = () => {
                     <h3 className="text-sm font-bold text-stone-400 mb-2 uppercase tracking-wider">Goods</h3>
                     <div className="space-y-2">
                         {availableItems.map(item => {
-                            const price = getPrice(item.value);
+                            const price = getPrice(item);
                             const canAfford = stats.money >= price;
                             return (
                                 <div
@@ -217,7 +220,9 @@ export const ShopPanel: React.FC = () => {
                     <div className="space-y-2">
                         {availableAnimals.map(animal => {
                             const basePrice = animal.price || 0;
-                            const price = getPrice(basePrice);
+                            // Mock item for animal pricing
+                            const animalItem = { ...animal, value: basePrice, type: ItemType.Resource };
+                            const price = getPrice(animalItem);
                             const canAfford = stats.money >= price;
                             return (
                                 <div

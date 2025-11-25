@@ -2,6 +2,18 @@ import { Enemy } from './CombatTypes';
 import { FactionType } from '../Factions/FactionTypes';
 
 export const ENEMIES: Record<string, Enemy> = {
+    slave_catcher: {
+        id: 'slave_catcher',
+        name: 'Slave Catcher',
+        description: 'A ruthless mercenary hunting for escaped slaves.',
+        faction: FactionType.ProSlavery,
+        health: 80,
+        maxHealth: 80,
+        damage: 15,
+        defense: 5,
+        loot: ['money', 'whiskey', 'pistol'],
+        money: 50
+    },
     border_ruffian: {
         id: 'border_ruffian',
         name: 'Border Ruffian',
