@@ -1,5 +1,5 @@
-import { Item, ItemType } from '../Inventory/InventoryTypes';
-import { MapNode, LocationType } from '../World/MapData';
+import { type Item, ItemType } from '../Inventory/InventoryTypes';
+import { type MapNode, LocationType } from '../World/WorldTypes';
 
 export class EconomySystem {
 
@@ -38,6 +38,26 @@ export class EconomySystem {
         // Ensure price doesn't go below 10% of base
         const finalPrice = Math.max(basePrice * 0.1, basePrice * modifier);
         return finalPrice;
+    }
+
+    public static getPriceWithContext(item: Item, location: MapNode, basePrice: number, droughtActive: boolean): number {
+        let price = this.getPrice(item, location, basePrice);
+
+        if (droughtActive) {
+            if (item.type === ItemType.Food) {
+                // Massive spike for food
+                if (location.id !== 'leavenworth') {
+                    price *= 4.0; // 400% price
+                } else {
+                    price *= 1.5; // Still expensive, but manageable
+                }
+            } else if (item.id === 'ox' || item.id === 'horse' || item.id === 'mule') {
+                // Animals are cheap because people are selling them (can't feed them)
+                price *= 0.5;
+            }
+        }
+
+        return price;
     }
 
     public static getSellPrice(item: Item, location: MapNode, basePrice: number): number {

@@ -14,6 +14,13 @@ import { AnimalsPanel } from './AnimalsPanel';
 import { SkillsPanel } from './SkillsPanel';
 import { SaloonPanel } from './SaloonPanel';
 import { SafehousePanel } from './SafehousePanel';
+import { FarmPanel } from './FarmPanel';
+import { LandOfficePanel } from './LandOfficePanel';
+import { PoliticsPanel } from './PoliticsPanel';
+import { NPCPanel } from './NPCPanel';
+import { KnowledgePanel } from './KnowledgePanel';
+import { ScavengePanel } from './ScavengePanel';
+import { ContainerPanel } from './ContainerPanel';
 import { INITIAL_MAP_NODES } from '../systems/World/MapData';
 
 export const Dashboard: React.FC = () => {
@@ -45,8 +52,10 @@ export const Dashboard: React.FC = () => {
             {/* Left Column: Stats & Info (3 cols) */}
             <div className="col-span-3 flex flex-col gap-4">
                 <StatsDisplay stats={stats} date={currentDate} />
+                <PoliticsPanel />
                 <FactionDisplay reputations={factionState.reputations} />
                 <SkillsPanel />
+                <KnowledgePanel />
                 <InventoryPanel />
                 <AnimalsPanel />
 
@@ -75,6 +84,11 @@ export const Dashboard: React.FC = () => {
                 {hasShop && <ShopPanel />}
                 <SaloonPanel />
                 <SafehousePanel />
+                <NPCPanel />
+                <LandOfficePanel />
+                <FarmPanel />
+                <ScavengePanel />
+                <ContainerPanel />
             </div>
 
             {/* Right Column: Log (3 cols) */}

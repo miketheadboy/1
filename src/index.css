@@ -1,1 +1,35 @@
 @import "tailwindcss";
+
+:root {
+    --color-parchment: #f5e6c8;
+    --color-parchment-dark: #e6d5b0;
+    --color-blood-red: #8a1c1c;
+    --color-charcoal: #1a1a1a;
+    --color-ink: #2c2c2c;
+}
+
+body {
+    background-color: var(--color-charcoal);
+    color: var(--color-parchment);
+    font-family: 'Courier New', Courier, monospace;
+    /* Fallback to typewriter style */
+}
+
+.game-panel {
+    background-color: var(--color-parchment);
+    color: var(--color-ink);
+    border: 2px solid var(--color-ink);
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.game-btn {
+    background-color: var(--color-blood-red);
+    color: var(--color-parchment);
+    border: 2px solid var(--color-parchment);
+    transition: all 0.2s;
+}
+
+.game-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}

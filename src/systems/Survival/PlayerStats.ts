@@ -5,6 +5,7 @@ export interface Skills {
     persuasion: number;
     trading: number;
     medicine: number;
+    scavenging: number;
 }
 
 export interface PlayerStats {
@@ -30,7 +31,8 @@ export const INITIAL_PLAYER_STATS: PlayerStats = {
         combat: 0,
         persuasion: 0,
         trading: 0,
-        medicine: 0
+        medicine: 0,
+        scavenging: 0
     }
 };
 

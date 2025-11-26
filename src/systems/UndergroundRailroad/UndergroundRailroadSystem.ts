@@ -1,6 +1,5 @@
-import { MapNode, LocationType } from '../World/MapData';
+import { type MapNode } from '../World/WorldTypes';
 import { PlayerManager } from '../Survival/PlayerStats';
-import { FactionType } from '../Factions/FactionTypes';
 
 export interface Mission {
     id: string;

@@ -1,5 +1,6 @@
 import type { MapNode, Coordinates } from './WorldTypes';
 import { INITIAL_MAP_NODES } from './MapData';
+import { TravelMode, type Vehicle } from './TravelTypes';
 
 export class TravelSystem {
     private nodes: Record<string, MapNode>;
@@ -23,20 +24,46 @@ export class TravelSystem {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    public getTravelTimeDays(distance: number, transportMode: 'foot' | 'horse' | 'wagon'): number {
-        let speed = 1; // Base speed
-        switch (transportMode) {
-            case 'foot': speed = 10; break; // miles per day
-            case 'wagon': speed = 15; break;
-            case 'horse': speed = 25; break;
+    public getTravelTimeDays(distance: number, mode: TravelMode, vehicle?: Vehicle | null): number {
+        let speed = 10; // Base foot speed (miles/day)
+
+        switch (mode) {
+            case TravelMode.Foot:
+                speed = 10;
+                break;
+            case TravelMode.Horseback:
+                speed = 25;
+                break;
+            case TravelMode.Wagon:
+                speed = 15;
+                if (vehicle) speed *= vehicle.speedModifier;
+                break;
+            case TravelMode.Cart:
+                speed = 12;
+                if (vehicle) speed *= vehicle.speedModifier;
+                break;
         }
-        // Assuming distance unit is roughly miles in the coordinate system
-        return Math.ceil(distance / speed);
+
+        // Ensure minimum 1 day
+        return Math.max(1, Math.ceil(distance / speed));
     }
 
     public getConnectedNodes(currentId: string): MapNode[] {
         const node = this.nodes[currentId];
         if (!node) return [];
         return node.connections.map(id => this.nodes[id]).filter(n => !!n);
+    }
+
+    public getVisibleNodes(currentLocationId: string, discoveredIds: string[]): MapNode[] {
+        const current = this.nodes[currentLocationId];
+        if (!current) return [];
+
+        // Visible nodes are:
+        // 1. Already discovered locations
+        // 2. Current location
+        // 3. Direct neighbors (scouting range)
+        const visibleSet = new Set([...discoveredIds, currentLocationId, ...current.connections]);
+
+        return Object.values(this.nodes).filter(node => visibleSet.has(node.id));
     }
 }

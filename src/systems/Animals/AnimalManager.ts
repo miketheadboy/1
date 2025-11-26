@@ -11,7 +11,7 @@ export class AnimalManager {
 
     constructor() { }
 
-    public spawnWildAnimals(_locationId: string): void {
+    public spawnWildAnimals(): void {
         this.wildAnimals = []; // Clear previous location's animals
 
         // Simple spawning logic based on random chance for now
@@ -166,7 +166,9 @@ export class AnimalManager {
             damage: stats.damage,
             defense: 0, // Animals have low defense usually
             loot: stats.yields.map(y => y.itemId), // Simplified loot
-            money: 0
+            money: 0,
+            accuracy: 60, // Default animal accuracy
+            xpReward: 10 + (stats.huntDifficulty / 2)
         };
     }
 }

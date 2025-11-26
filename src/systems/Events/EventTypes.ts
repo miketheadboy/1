@@ -15,7 +15,11 @@ export interface GameEventOption {
         hunger?: number;
         reputationChanges?: { faction: FactionType | NativeTribe; amount: number }[];
         addItems?: string[];
+        removeItems?: string[];
+
         triggerEventId?: string; // Chain events
+        combat?: { enemyId: string };
+        playerStats?: any; // Partial<PlayerStats> - using any to avoid circular dep for now
     };
 }
 
@@ -27,4 +31,5 @@ export interface GameEvent {
     triggerCondition?: (gameState: unknown) => boolean; // Dynamic trigger
     options: GameEventOption[];
     isUnique?: boolean; // If true, only happens once
+    type?: string; // 'random', 'historical', 'combat', etc.
 }

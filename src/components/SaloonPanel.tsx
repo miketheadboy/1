@@ -4,7 +4,7 @@ import { INITIAL_MAP_NODES } from '../systems/World/MapData';
 import { LocationType } from '../systems/World/WorldTypes';
 
 export const SaloonPanel: React.FC = () => {
-    const { currentLocationId, playerManager, addLog } = useGameStore();
+    const { currentLocationId, playerManager, addLog, npcSystem, interactWithNPC } = useGameStore();
     const currentLocation = INITIAL_MAP_NODES[currentLocationId];
     const stats = playerManager.getStats();
 
@@ -85,8 +85,8 @@ export const SaloonPanel: React.FC = () => {
                     onClick={handleGamble}
                     disabled={stats.money < betAmount}
                     className={`w-full py-2 rounded font-bold transition-colors ${stats.money >= betAmount
-                            ? 'bg-amber-700 hover:bg-amber-600 text-white'
-                            : 'bg-stone-700 text-stone-500 cursor-not-allowed'
+                        ? 'bg-amber-700 hover:bg-amber-600 text-white'
+                        : 'bg-stone-700 text-stone-500 cursor-not-allowed'
                         }`}
                 >
                     ROLL THE DICE
@@ -96,6 +96,45 @@ export const SaloonPanel: React.FC = () => {
                     <div className={`mt-4 p-2 rounded font-bold ${gameResult.includes('Win') ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'
                         }`}>
                         {gameResult}
+                    </div>
+                )}
+            </div>
+
+            {/* Recruitment Section */}
+            <div className="bg-stone-900 p-4 rounded text-center mt-4">
+                <h3 className="text-lg font-bold text-stone-300 mb-2">Looking for Work</h3>
+                {npcSystem.getNPCsAtLocation(currentLocationId).length === 0 ? (
+                    <p className="text-xs text-stone-500">No one here is looking for a job right now.</p>
+                ) : (
+                    <div className="space-y-2">
+                        {npcSystem.getNPCsAtLocation(currentLocationId).map(npc => (
+                            <div key={npc.id} className="bg-stone-800 p-2 rounded border border-stone-700">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-stone-300 font-bold">{npc.name}</span>
+                                    <span className="text-xs text-stone-500">{npc.faction}</span>
+                                </div>
+                                <p className="text-xs text-stone-400 text-left mt-1">{npc.description}</p>
+                                {/* Check for recruit option */}
+                                {npc.dialogue.find(d => d.effect?.recruit) && npc.relationship !== 'recruited' && (
+                                    <button
+                                        onClick={() => {
+                                            const recruitOption = npc.dialogue.find(d => d.effect?.recruit);
+                                            if (recruitOption) {
+                                                interactWithNPC(npc.id, recruitOption.id);
+                                            }
+                                        }}
+                                        className="w-full mt-2 bg-stone-700 hover:bg-stone-600 text-stone-300 text-xs py-1 rounded transition-colors"
+                                    >
+                                        Recruit
+                                    </button>
+                                )}
+                                {npc.relationship === 'recruited' && (
+                                    <div className="w-full mt-2 bg-green-900/30 text-green-400 text-xs py-1 rounded">
+                                        Recruited
+                                    </div>
+                                )}
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

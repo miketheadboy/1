@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGameStore } from '../core/GameState';
 import { INITIAL_MAP_NODES } from '../systems/World/MapData';
-import { Mission } from '../systems/UndergroundRailroad/UndergroundRailroadSystem';
+import type { Mission } from '../systems/UndergroundRailroad/UndergroundRailroadSystem';
 
 export const SafehousePanel: React.FC = () => {
     const { currentLocationId, undergroundRailroadSystem, startMission, addLog } = useGameStore();

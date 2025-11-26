@@ -26,6 +26,7 @@ export interface CharacterBackground {
         persuasion: number;
         trading: number;
         medicine: number;
+        scavenging: number;
     };
 }
 
@@ -43,7 +44,7 @@ export const BACKGROUNDS: Record<BackgroundType, CharacterBackground> = {
         startingReputation: [
             { faction: FactionType.FreeState, amount: 10 }
         ],
-        skills: { farming: 5, survival: 3, combat: 1, persuasion: 1, trading: 2, medicine: 1 }
+        skills: { farming: 5, survival: 3, combat: 1, persuasion: 1, trading: 2, medicine: 1, scavenging: 2 }
     },
     [BackgroundType.AbolitionistPreacher]: {
         type: BackgroundType.AbolitionistPreacher,
@@ -58,7 +59,7 @@ export const BACKGROUNDS: Record<BackgroundType, CharacterBackground> = {
             { faction: FactionType.Abolitionist, amount: 20 },
             { faction: FactionType.ProSlavery, amount: -20 }
         ],
-        skills: { farming: 0, survival: 1, combat: 0, persuasion: 5, trading: 1, medicine: 2 }
+        skills: { farming: 0, survival: 1, combat: 0, persuasion: 5, trading: 1, medicine: 2, scavenging: 0 }
     },
     [BackgroundType.BorderRuffian]: {
         type: BackgroundType.BorderRuffian,
@@ -74,7 +75,7 @@ export const BACKGROUNDS: Record<BackgroundType, CharacterBackground> = {
             { faction: FactionType.FreeState, amount: -20 },
             { faction: FactionType.Abolitionist, amount: -30 }
         ],
-        skills: { farming: 1, survival: 2, combat: 4, persuasion: 1, trading: 1, medicine: 0 }
+        skills: { farming: 1, survival: 2, combat: 4, persuasion: 1, trading: 1, medicine: 0, scavenging: 3 }
     },
     [BackgroundType.Merchant]: {
         type: BackgroundType.Merchant,
@@ -86,7 +87,7 @@ export const BACKGROUNDS: Record<BackgroundType, CharacterBackground> = {
             { itemId: 'tonic', quantity: 2 }
         ],
         startingReputation: [],
-        skills: { farming: 0, survival: 0, combat: 1, persuasion: 3, trading: 5, medicine: 1 }
+        skills: { farming: 0, survival: 0, combat: 1, persuasion: 3, trading: 5, medicine: 1, scavenging: 1 }
     },
     [BackgroundType.Frontiersman]: {
         type: BackgroundType.Frontiersman,
@@ -98,6 +99,6 @@ export const BACKGROUNDS: Record<BackgroundType, CharacterBackground> = {
             { itemId: 'bandages', quantity: 2 }
         ],
         startingReputation: [],
-        skills: { farming: 1, survival: 5, combat: 3, persuasion: 0, trading: 1, medicine: 3 }
+        skills: { farming: 1, survival: 5, combat: 3, persuasion: 0, trading: 1, medicine: 3, scavenging: 5 }
     }
 };

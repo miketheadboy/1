@@ -1,4 +1,5 @@
 import { ItemType, type Item } from './InventoryTypes';
+import { EffectTrigger } from '../Combat/CombatTypes';
 
 export const ITEMS: Record<string, Item> = {
     hardtack: {
@@ -100,6 +101,121 @@ export const ITEMS: Record<string, Item> = {
         effects: { morale: 5 },
         value: 4,
     },
+    // Animals
+    horse: {
+        id: 'horse',
+        name: 'Horse',
+        type: ItemType.Resource,
+        description: 'A sturdy riding horse. Increases travel speed.',
+        effects: {},
+        value: 150,
+    },
+    ox: {
+        id: 'ox',
+        name: 'Ox',
+        type: ItemType.Resource,
+        description: 'Strong draft animal. Essential for pulling wagons.',
+        effects: {},
+        value: 80,
+    },
+    mule: {
+        id: 'mule',
+        name: 'Mule',
+        type: ItemType.Resource,
+        description: 'Hardy pack animal.',
+        effects: {},
+        value: 60,
+    },
+    // Vehicles
+    wagon: {
+        id: 'wagon',
+        name: 'Conestoga Wagon',
+        type: ItemType.Tool,
+        description: 'A heavy covered wagon. Requires 2 Oxen. Slow but carries a lot.',
+        effects: {},
+        value: 200,
+    },
+    cart: {
+        id: 'cart',
+        name: 'Hand Cart',
+        type: ItemType.Tool,
+        description: 'A small two-wheeled cart. Can be pulled by a mule or person.',
+        effects: {},
+        value: 50,
+    },
+    // Books
+    bible: {
+        id: 'bible',
+        name: 'Holy Bible',
+        type: ItemType.Tool,
+        description: 'The Good Book. Study to gain Theology knowledge.',
+        effects: { morale: 5 },
+        value: 10,
+        knowledgeType: 'Theology',
+        xpValue: 20
+    },
+    law_book: {
+        id: 'law_book',
+        name: 'Blackstone\'s Commentaries',
+        type: ItemType.Tool,
+        description: 'A dense legal text. Study to gain Law knowledge.',
+        effects: {},
+        value: 25,
+        knowledgeType: 'Law',
+        xpValue: 20
+    },
+    tactics_manual: {
+        id: 'tactics_manual',
+        name: 'Hardee\'s Tactics',
+        type: ItemType.Tool,
+        description: 'Standard infantry manual. Study to gain Military knowledge.',
+        effects: {},
+        value: 30,
+        knowledgeType: 'Military',
+        xpValue: 20
+    },
+    sharps_rifle: {
+        id: 'sharps_rifle',
+        name: "Sharps Rifle",
+        type: ItemType.Weapon,
+        description: "A high-tech breech-loading rifle. Often shipped in crates marked 'Bibles'.",
+        value: 50,
+        weight: 4,
+        effects: {},
+        combatEffects: [
+            {
+                id: 'beechers_bibles_dmg',
+                trigger: EffectTrigger.OnAttack,
+                chance: 1.0,
+                multiplier: 0.2, // +20%
+                message: "Righteous fury guides your aim! (+20% Damage)",
+                condition: (context: any) => context.knowledgeManager?.hasPerk('beechers_bibles')
+            },
+            {
+                id: 'beechers_bibles_preach',
+                trigger: EffectTrigger.OnNegotiate,
+                chance: 0.8, // 80% chance
+                message: "You preach with the fury of the Lord and the cold steel of a Sharps rifle!",
+                condition: (context: any) => context.knowledgeManager?.hasPerk('beechers_bibles') && context.negotiationType === 'Preach'
+            }
+        ],
+        weaponStats: {
+            damage: 25,
+            accuracy: 95,
+            range: 100
+        }
+    },
+    printing_press: {
+        id: 'printing_press',
+        name: "Printing Press",
+        type: ItemType.Tool,
+        description: "A heavy cast-iron press. The most dangerous weapon in the territory.",
+        value: 200,
+        weight: 50,
+        effects: {
+            reputation: 5 // Passive influence gain (to be implemented)
+        }
+    }
 };
 
 export const STARTING_ITEMS: { itemId: string; quantity: number }[] = [

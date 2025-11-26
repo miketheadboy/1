@@ -1,0 +1,3 @@
+src/components/ScavengePanel.tsx(6,38): error TS6133: 'currentLocationId' is declared but its value is never read.
+src/systems/Scavenge/ScavengeManager.ts(1,72): error TS6133: 'ScavengeRiskLevel' is declared but its value is never read.
+src/systems/Scavenge/ScavengeTypes.ts(1,1): error TS6133: 'ItemType' is declared but its value is never read.

@@ -3,6 +3,7 @@ export enum FactionType {
     FreeState = 'Free-State',
     Abolitionist = 'Abolitionist',
     Native = 'Native',
+    Neutral = 'Neutral',
 }
 
 export enum NativeTribe {
