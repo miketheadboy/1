@@ -1,5 +1,5 @@
 import { useGameStore } from './src/core/GameState';
-import { ScavengeLocationType } from './src/systems/Scavenge/ScavengeTypes';
+
 
 // Mock console.log to capture output
 const originalLog = console.log;

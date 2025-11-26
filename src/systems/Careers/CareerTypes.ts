@@ -20,7 +20,7 @@ export interface CareerAction {
         minReputation?: number;
         skillLevel?: number;
     };
-    effect: (state: any) => { success: boolean; message: string };
+    effect: (state: unknown) => { success: boolean; message: string };
 }
 
 export interface CareerState {
@@ -44,6 +44,6 @@ export interface CareerTemplate {
     name: string;
     description: string;
     actions: CareerAction[];
-    dailyUpdate: (state: any) => string[]; // Returns log messages
-    incomeFormula: (state: any) => number;
+    dailyUpdate: (state: unknown) => string[]; // Returns log messages
+    incomeFormula: (state: unknown) => number;
 }

@@ -19,7 +19,7 @@ export interface GameEventOption {
 
         triggerEventId?: string; // Chain events
         combat?: { enemyId: string };
-        playerStats?: any; // Partial<PlayerStats> - using any to avoid circular dep for now
+        playerStats?: unknown; // Partial<PlayerStats> - using unknown to avoid circular dep for now
     };
 }
 

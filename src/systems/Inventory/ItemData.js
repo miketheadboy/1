@@ -1,7 +1,6 @@
-import { ItemType, type Item } from './InventoryTypes';
+import { ItemType } from './InventoryTypes';
 import { EffectTrigger } from '../Combat/CombatTypes';
-
-export const ITEMS: Record<string, Item> = {
+export const ITEMS = {
     hardtack: {
         id: 'hardtack',
         name: 'Hardtack',
@@ -189,8 +188,8 @@ export const ITEMS: Record<string, Item> = {
                 chance: 1.0,
                 multiplier: 0.2, // +20%
                 message: "Righteous fury guides your aim! (+20% Damage)",
-                condition: (context: unknown) => {
-                    const ctx = context as { knowledgeManager?: { hasPerk: (id: string) => boolean } };
+                condition: (context) => {
+                    const ctx = context;
                     return ctx.knowledgeManager?.hasPerk('beechers_bibles') ?? false;
                 }
             },
@@ -199,8 +198,8 @@ export const ITEMS: Record<string, Item> = {
                 trigger: EffectTrigger.OnNegotiate,
                 chance: 0.8, // 80% chance
                 message: "You preach with the fury of the Lord and the cold steel of a Sharps rifle!",
-                condition: (context: unknown) => {
-                    const ctx = context as { knowledgeManager?: { hasPerk: (id: string) => boolean }, negotiationType?: string };
+                condition: (context) => {
+                    const ctx = context;
                     return (ctx.knowledgeManager?.hasPerk('beechers_bibles') ?? false) && ctx.negotiationType === 'Preach';
                 }
             }
@@ -223,8 +222,7 @@ export const ITEMS: Record<string, Item> = {
         }
     }
 };
-
-export const STARTING_ITEMS: { itemId: string; quantity: number }[] = [
+export const STARTING_ITEMS = [
     { itemId: 'hardtack', quantity: 2 },
     { itemId: 'dried_meat', quantity: 1 },
 ];

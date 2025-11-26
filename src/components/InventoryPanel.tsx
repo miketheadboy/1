@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 export const InventoryPanel: React.FC = () => {
     const inventoryManager = useGameStore(state => state.inventoryManager);
-    const useItemAction = useGameStore(state => state.useItem);
+    const consumeItem = useGameStore(state => state.useItem);
     const [expanded, setExpanded] = useState(true);
     const items = inventoryManager.getItems();
 
@@ -76,7 +76,7 @@ export const InventoryPanel: React.FC = () => {
                                     </div>
                                     {(item.type === ItemType.Food || item.type === ItemType.Medicine) && (
                                         <button
-                                            onClick={() => useItemAction(item.id)}
+                                            onClick={() => consumeItem(item.id)}
                                             className="text-xs bg-amber-700 hover:bg-amber-600 text-white px-3 py-1 rounded transition-colors"
                                         >
                                             Use

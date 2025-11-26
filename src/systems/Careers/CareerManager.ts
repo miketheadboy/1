@@ -129,119 +129,14 @@ export class CareerManager {
                 description: "Seek office and influence public opinion.",
                 actions: [
                     {
-                        id: 'hold_rally',
-                        name: 'Hold Rally',
-                        description: 'Gather supporters to increase influence.',
-                        cost: 50,
-                        energyCost: 20,
-                        cooldown: 7,
-                        effect: (_state: any) => {
-                            // Increase influence
-                            this.state.stats.influence += 5 + (this.state.level * 2);
-                            return { success: true, message: "Rally held! Influence increased." };
-                        }
-                    },
-                    {
-                        id: 'give_speech',
-                        name: 'Give Speech',
-                        description: 'Attempt to sway local opinion.',
-                        cost: 10,
-                        energyCost: 10,
-                        cooldown: 3,
-                        effect: (_state: any) => {
-                            // Logic to affect local tension/faction control
-                            return { success: true, message: "Speech given. Opinions are shifting." };
-                        }
-                    }
-                ],
-                dailyUpdate: () => {
-                    // Decay influence slightly?
-                    return [];
-                },
-                incomeFormula: (state) => {
-                    // Donations
-                    return Math.floor(state.stats.influence * 0.5);
-                }
-            },
-            [CareerType.Clergy]: {
-                type: CareerType.Clergy,
-                name: "Clergy",
-                description: "Tend to the spiritual needs of the people.",
-                actions: [
-                    {
-                        id: 'give_sermon',
-                        name: 'Give Sermon',
-                        description: 'Preach to your congregation.',
-                        cost: 0,
-                        energyCost: 15,
-                        cooldown: 7,
-                        effect: (_state: any) => {
-                            this.state.stats.congregationSize += 2;
-                            return { success: true, message: "Sermon delivered. Congregation grew." };
-                        }
-                    }
-                ],
-                dailyUpdate: () => [],
-                incomeFormula: (state) => Math.floor(state.stats.congregationSize * 0.2)
-            },
-            [CareerType.Trader]: {
-                type: CareerType.Trader,
-                name: "Trader",
-                description: "Buy low, sell high, and establish routes.",
-                actions: [], // To be implemented
-                dailyUpdate: () => [],
-                incomeFormula: (state) => Math.floor(state.stats.wealth * 0.01)
-            },
-            [CareerType.Farmer]: {
-                type: CareerType.Farmer,
-                name: "Farmer",
-                description: "Work the land and harvest crops.",
-                actions: [], // To be implemented
-                dailyUpdate: () => [],
-                incomeFormula: () => 0 // Income comes from selling crops manually usually
-            },
-            [CareerType.Militant]: {
-                type: CareerType.Militant,
-                name: "Militant",
-                description: "Fight for your cause through force.",
-                actions: [
-                    {
-                        id: 'start_militia',
-                        name: 'Form Militia',
-                        description: 'Start your own paramilitary group.',
-                        cost: 100,
-                        energyCost: 50,
-                        cooldown: 0,
-                        effect: (state: GameState) => {
-                            if (this.militiaManager.getPlayerMilitia()) {
-                                return { success: false, message: "You already lead a militia." };
-                            }
-                            // Determine faction based on player background or choice? Defaulting to Neutral for now
-                            // Using FactionType.Neutral directly instead of casting to any
-                            this.militiaManager.createPlayerMilitia("My Company", 4 as any, state.currentLocationId);
-                            return { success: true, message: "Militia formed! You can now recruit and train." };
-                        }
-                    },
-                    {
-                        id: 'recruit_militia',
-                        name: 'Recruit',
-                        description: 'Recruit 5 men ($10 each).',
-                        cost: 50,
-                        energyCost: 20,
-                        cooldown: 3,
-                        effect: (state: GameState) => {
-                            return this.militiaManager.recruit(5, 10, state);
-                        }
-                    },
-                    {
                         id: 'train_militia',
                         name: 'Drill Troops',
                         description: 'Train your men to improve effectiveness.',
                         cost: 10, // Supplies
                         energyCost: 30,
                         cooldown: 1,
-                        effect: (state: GameState) => {
-                            return this.militiaManager.train(state);
+                        effect: (state: unknown) => {
+                            return this.militiaManager.train(state as GameState);
                         }
                     },
                     {
@@ -251,16 +146,49 @@ export class CareerManager {
                         cost: 0,
                         energyCost: 40,
                         cooldown: 2,
-                        effect: (state: GameState) => {
-                            const result = this.militiaManager.patrol(state);
+                        effect: (state: unknown) => {
+                            const gs = state as GameState;
+                            const result = this.militiaManager.patrol(gs);
                             if (!result) return { success: false, message: "No militia to patrol with." };
 
                             // Log results
-                            result.log.forEach(l => state.addLog(l));
+                            result.log.forEach(l => gs.addLog(l));
                             return { success: true, message: result.victory ? "Patrol successful." : "Patrol encountered heavy resistance." };
                         }
                     }
                 ],
+                dailyUpdate: () => [],
+                incomeFormula: () => 0
+            },
+            [CareerType.Farmer]: {
+                type: CareerType.Farmer,
+                name: "Farmer",
+                description: "Work the land.",
+                actions: [],
+                dailyUpdate: () => [],
+                incomeFormula: () => 0
+            },
+            [CareerType.Trader]: {
+                type: CareerType.Trader,
+                name: "Trader",
+                description: "Buy and sell goods.",
+                actions: [],
+                dailyUpdate: () => [],
+                incomeFormula: () => 0
+            },
+            [CareerType.Clergy]: {
+                type: CareerType.Clergy,
+                name: "Clergy",
+                description: "Tend to the flock.",
+                actions: [],
+                dailyUpdate: () => [],
+                incomeFormula: () => 0
+            },
+            [CareerType.Militant]: {
+                type: CareerType.Militant,
+                name: "Militant",
+                description: "Fight for the cause.",
+                actions: [],
                 dailyUpdate: () => [],
                 incomeFormula: () => 0
             }

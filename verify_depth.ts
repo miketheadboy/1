@@ -19,23 +19,24 @@ knowledgeManager.gainXp(KnowledgeType.Theology, 500, (msg) => console.log(msg));
 // Actually let's try to unlock it properly if we can, or just force it.
 // The level up logic in KnowledgeManager checks perks.
 // Let's force the perk for verification certainty.
-(knowledgeManager as any).state.unlockedPerks.push('beechers_bibles');
-console.log('Perk "Beecher\'s Bibles" unlocked.');
+(knowledgeManager as unknown as { state: { unlockedPerks: string[] } }).state.unlockedPerks.push('beechers_bibles');
 
-inventoryManager.addItem('sharps_rifle', 1);
-console.log('Sharps Rifle added.');
+import { FactionType } from './src/systems/Factions/FactionTypes';
 
-// Start Mock Combat
 const mockEnemy = {
     id: 'border_ruffian',
     name: 'Border Ruffian',
+    description: 'A test bandit',
+    faction: FactionType.ProSlavery,
     health: 50,
     maxHealth: 50,
     damage: 10,
     defense: 0,
+    accuracy: 0.8,
     xpReward: 20,
     money: 10,
-    lootTable: []
+    lootTable: [],
+    loot: []
 };
 combatManager.startCombat(mockEnemy, playerManager);
 

@@ -1,0 +1,15 @@
+
+> bleedingkansas@0.0.0 lint
+> eslint .
+
+
+G:\BLEEDINGKANSAS\src\systems\Careers\CareerManager.ts
+  126:19  error  Parsing error: ':' expected
+
+G:\BLEEDINGKANSAS\src\systems\Inventory\ItemData.ts
+  192:62   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  199:62   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  199:127  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 4 problems (4 errors, 0 warnings)
+

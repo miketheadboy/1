@@ -1,28 +1,22 @@
-import type { StoryModule } from './StoryModule';
-import type { WorldState } from '../../../core/StorytellerTypes';
-import type { GameEvent } from '../EventTypes';
-
-export class EcologyEventsModule implements StoryModule {
+export class EcologyEventsModule {
     id = 'ecology_events';
-
-    update(worldState: WorldState): GameEvent | null {
+    update(worldState) {
         // SYSTEM INTERCONNECT: Ecology -> Economy (Drought)
         // Update moisture level
         const month = worldState.currentDate.getMonth();
         const isDrySeason = month >= 5 && month <= 10; // June to November
-
         if (isDrySeason) {
             // 10% chance to drop moisture
             if (Math.random() < 0.1) {
                 worldState.moistureLevel = Math.max(0, worldState.moistureLevel - 5);
             }
-        } else {
+        }
+        else {
             // Recover moisture in Winter/Spring
             if (Math.random() < 0.2) {
                 worldState.moistureLevel = Math.min(100, worldState.moistureLevel + 5);
             }
         }
-
         // Trigger Drought
         if (worldState.moistureLevel < 20) {
             if (!worldState.droughtActive) {
@@ -36,7 +30,8 @@ export class EcologyEventsModule implements StoryModule {
                     options: [{ id: 'ok', text: 'God help us.', effects: {} }]
                 };
             }
-        } else if (worldState.moistureLevel > 40) {
+        }
+        else if (worldState.moistureLevel > 40) {
             if (worldState.droughtActive) {
                 worldState.droughtActive = false;
                 return {
@@ -49,7 +44,6 @@ export class EcologyEventsModule implements StoryModule {
                 };
             }
         }
-
         return null;
     }
 }

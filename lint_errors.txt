@@ -1,0 +1,49 @@
+
+> bleedingkansas@0.0.0 lint
+> eslint .
+
+
+G:\BLEEDINGKANSAS\src\components\InventoryPanel.tsx
+  79:60  error  React Hook "useItemAction" cannot be called inside a callback. React Hooks must be called in a React function component or a custom React Hook function  react-hooks/rules-of-hooks
+
+G:\BLEEDINGKANSAS\src\systems\Audio\AudioManager.ts
+  16:72  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\src\systems\Careers\CareerManager.ts
+  138:34  error  '_state' is defined but never used        @typescript-eslint/no-unused-vars
+  138:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  151:34  error  '_state' is defined but never used        @typescript-eslint/no-unused-vars
+  151:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  178:34  error  '_state' is defined but never used        @typescript-eslint/no-unused-vars
+  178:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  221:88  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\src\systems\Careers\CareerTypes.ts
+  23:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  47:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  48:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\src\systems\Events\EventTypes.ts
+  22:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\src\systems\Events\StoryModules\EcologyEventsModule.ts
+  9:36  error  '_gameState' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\BLEEDINGKANSAS\src\systems\Inventory\ItemData.ts
+  192:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  199:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\src\systems\Knowledge\KnowledgeTypes.ts
+  15:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\src\verify_recruitment.ts
+  37:6  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\verify_depth.ts
+  22:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\verify_scavenge.ts
+  2:10  error  'ScavengeLocationType' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 20 problems (20 errors, 0 warnings)
+

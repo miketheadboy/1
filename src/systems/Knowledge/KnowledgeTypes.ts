@@ -12,7 +12,7 @@ export interface Perk {
     description: string;
     requiredKnowledge: KnowledgeType;
     requiredLevel: number;
-    effect: (state: any) => void; // Effect logic to be applied
+    effect: (state: unknown) => void; // Effect logic to be applied
 }
 
 export interface KnowledgeState {

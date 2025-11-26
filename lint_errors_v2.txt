@@ -1,0 +1,23 @@
+
+> bleedingkansas@0.0.0 lint
+> eslint .
+
+
+G:\BLEEDINGKANSAS\src\systems\Careers\CareerManager.ts
+  132:20  error  Parsing error: Property assignment expected
+
+G:\BLEEDINGKANSAS\src\systems\Inventory\ItemData.ts
+  192:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  199:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\src\verify_recruitment.ts
+  37:6  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\verify_depth.ts
+  22:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\BLEEDINGKANSAS\verify_scavenge.ts
+  2:10  error  'ScavengeLocationType' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 6 problems (6 errors, 0 warnings)
+
