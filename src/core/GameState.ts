@@ -60,6 +60,23 @@ export interface GameState {
     militiaManager: MilitiaManager;
     calamityManager: CalamityManager;
     knowledgeManager: KnowledgeManager;
+    systemInterconnects: SystemInterconnects;
+    storytellerEngine: StorytellerEngine;
+    farmingSystem: FarmingSystem;
+    npcSystem: NPCSystem;
+    politicsSystem: PoliticsSystem;
+    scavengeManager: ScavengeManager;
+    woundManager: WoundManager;
+
+    // Data Structures
+    scavengeNodes: ScavengeNode[];
+    containers: Record<string, GameContainer[]>;
+    companions: Companion[];
+
+    // Actions
+    scavenge: (nodeId: string) => void;
+    openContainer: (containerId: string) => void;
+    recruitCompanion: (companion: Companion) => void;
 
     // Game Data
     currentDate: Date;

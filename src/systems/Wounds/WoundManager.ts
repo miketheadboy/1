@@ -1,4 +1,5 @@
-import { BodyPart, BodyPartStatus, Wound, WoundSeverity, WoundType } from './WoundTypes';
+import { BodyPart, WoundSeverity, WoundType } from './WoundTypes';
+import type { BodyPartStatus, Wound } from './WoundTypes';
 import { PlayerManager } from '../Survival/PlayerStats';
 
 export class WoundManager {
@@ -28,7 +29,7 @@ export class WoundManager {
         };
     }
 
-    public setState(state: any) {
+    public setState(state: { bodyParts: Record<BodyPart, BodyPartStatus> }) {
         if (state.bodyParts) {
             this.bodyParts = state.bodyParts;
         }

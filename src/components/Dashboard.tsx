@@ -21,6 +21,7 @@ import { NPCPanel } from './NPCPanel';
 import { KnowledgePanel } from './KnowledgePanel';
 import { ScavengePanel } from './ScavengePanel';
 import { ContainerPanel } from './ContainerPanel';
+import { WoundPanel } from './WoundPanel';
 import { INITIAL_MAP_NODES } from '../systems/World/MapData';
 
 export const Dashboard: React.FC = () => {
@@ -52,6 +53,7 @@ export const Dashboard: React.FC = () => {
             {/* Left Column: Stats & Info (3 cols) */}
             <div className="col-span-3 flex flex-col gap-4">
                 <StatsDisplay stats={stats} date={currentDate} />
+                <WoundPanel />
                 <PoliticsPanel />
                 <FactionDisplay reputations={factionState.reputations} />
                 <SkillsPanel />
