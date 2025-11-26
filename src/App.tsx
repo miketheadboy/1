@@ -45,7 +45,7 @@ const ShakeContainer: React.FC<{ children: React.ReactNode }> = ({ children }) =
   }, [updateShake]);
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} className="w-full h-full">
       {children}
     </div>
   );
