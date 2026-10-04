@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Compiled JS must never live next to TS sources: Vite resolves .js before .ts
+src/**/*.js

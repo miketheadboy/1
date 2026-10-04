@@ -19,16 +19,11 @@ npm run preview   # Serve the production build
 - **No test framework is configured.** `npm run build` and `npm run lint` are the quality gates. Both currently pass cleanly, so keep them that way.
 - Run both before committing.
 
-## ⚠️ Critical Gotcha: Stale Compiled `.js` Files Shadow the `.ts` Sources
+## ⚠️ Never Put `.js` Files in `src/`
 
-Most `.ts` files under `src/core/` and `src/systems/` have a **committed, outdated `.js` twin** next to them (e.g. `GameState.ts` + `GameState.js`). Imports are written without extensions (`from '../core/GameState'`). **Vite's default resolution order tries `.js` before `.ts`, so the production bundle and dev server load the stale `.js` file.** Meanwhile `tsc` type-checks the `.ts` file, so the build passes while your change is silently ignored at runtime.
+`src/` is TypeScript only. Imports omit extensions (`from '../core/GameState'`), and **Vite resolves `.js` before `.ts`**. A stray `Foo.js` next to `Foo.ts` would silently replace it at runtime while `tsc` still type-checks the `.ts`, so the build passes but your edits do nothing.
 
-This has been verified: a change to `SaveManager.ts` did not appear in `dist/`.
-
-- Only these `.ts` files have no `.js` twin, so edits to them do take effect: `Audio/AudioManager.ts`, `Careers/CareerManager.ts`, `Careers/CareerTypes.ts`, `Ecology/ResourceTypes.ts`, `FX/FXManager.ts`, `Survival/BaseSystem.ts`. All `.tsx` components are unaffected.
-- **Do not edit the `.js` files by hand, and do not create new ones.** Treat `.ts` as the source of truth.
-- The proper fix is to delete all `src/**/*.js` files, then verify with `npm run build` and `npm run dev`. Get the user's agreement before doing this, because runtime behavior will change to match the current `.ts` code.
-- Until that's done, if a `.ts` change "doesn't work" at runtime, this is the likely cause.
+This happened before: 52 stale compiled `.js` copies were committed alongside the `.ts` sources and shadowed most game logic until they were removed. `.gitignore` now ignores `src/**/*.js` to prevent a repeat. If you ever see a `.js` file in `src/`, delete it. Don't edit it.
 
 ## Tech Stack
 
@@ -100,7 +95,7 @@ From `tsconfig.app.json` (only `src/` is included):
 - `verbatimModuleSyntax: true`: **type-only imports must use `import type { ... }`** (or inline `type` modifiers).
 - `noUncheckedSideEffectImports`, `forceConsistentCasingInFileNames`: file name case in imports must match exactly.
 - `erasableSyntaxOnly: false`: `enum`s are allowed and widely used.
-- `moduleResolution: "bundler"`, `allowImportingTsExtensions`, `noEmit`: `tsc` only type-checks and never emits, so it did not produce the stray `.js` files.
+- `moduleResolution: "bundler"`, `allowImportingTsExtensions`, `noEmit`: `tsc` only type-checks and never emits. Never run a bare `tsc` with emit settings that would write `.js` into `src/`.
 - ESLint `@typescript-eslint/no-explicit-any` is on; prefer `unknown` or proper types.
 - `react-refresh/only-export-components`: `.tsx` files should export components only. Put shared constants and types elsewhere.
 
@@ -115,6 +110,7 @@ From `tsconfig.app.json` (only `src/` is included):
 
 ## Known TODOs in Code
 
+- `components/MainMenu.tsx`: the main-menu "Load Game" button only shows an `alert` placeholder. Loading works from the in-game LOAD GAME button (`SaveLoadMenu.tsx`), which asks for `window.confirm` first.
 - `core/GameState.ts`: companion morale/leaving when unpaid; "Trigger actual combat" from events
 - `Combat/CombatManager.ts`: ammo tracking
 - `Scavenge/ScavengeManager.ts`: luck stat (currently hardcoded `0`)
@@ -134,7 +130,7 @@ Put throwaway scripts in a scratch location, not the repo.
 
 ## Workflow Checklist
 
-1. Edit the `.ts`/`.tsx` source, never the `.js` twins.
+1. Edit `.ts`/`.tsx` sources only.
 2. `npm run build`: must type-check and bundle.
 3. `npm run lint`: must be clean.
-4. If the change touches a module with a stale `.js` twin, confirm it actually takes effect at runtime (see the gotcha above).
+4. For gameplay changes, check them in the running app (`npm run dev`). The game opens with a story event modal (the Kansas-Nebraska Act) that must be answered before the dashboard is usable.
